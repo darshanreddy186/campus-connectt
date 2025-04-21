@@ -1,9 +1,144 @@
-function add(a: number, b: number): number {
-  return a + b;
-}
+import { render, screen, waitFor } from "@testing-library/react";
+import App from "./App";
 
-test('adds two numbers correctly', () => {
-  expect(add(2, 2)).toBe(4);
-  expect(add(5, 3)).toBe(8);
-  expect(add(-1, 1)).toBe(0);
+// Mock @clerk/clerk-react
+jest.mock("@clerk/clerk-react", () => ({
+  SignedIn: ({ children }) => <>{children}</>,
+  SignedOut: () => <div data-testid="signed-out">Signed Out</div>,
+  RedirectToSignIn: () => (
+    <div data-testid="redirect">Redirecting to Sign In</div>
+  ),
+  useUser: jest.fn(() => ({
+    isLoaded: true,
+    user: {
+      id: "user_123",
+      publicMetadata: { role: "student" }, // Default to 'student'
+    },
+  })),
+}));
+
+// Mock components to isolate App logic
+jest.mock("./components/Navbar", () => () => (
+  <div data-testid="navbar">Mock Navbar</div>
+));
+jest.mock("./components/AdminDashboard", () => ({ onEventAdded }) => (
+  <div data-testid="admin-dashboard">Mock Admin Dashboard</div>
+));
+jest.mock(
+  "./components/EventCard",
+  () =>
+    ({ event, onRegister, isRegistered }) =>
+      <div data-testid="event-card">{event.title}</div>
+);
+
+// Mock fetch for event data
+beforeEach(() => {
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      json: () =>
+        Promise.resolve([
+          {
+            _id: "1",
+            title: "Mock Event",
+            date: "2025-01-01",
+            category: "Tech",
+            image: "",
+            description: "Test Description",
+            location: "Campus Hall",
+            registeredUsers: ["user_123"],
+          },
+        ]),
+    })
+  ) as jest.Mock;
 });
+
+describe("<App />", () => {
+  it("renders student view with events and FeatureCards", async () => {
+    render(<App />);
+
+    // Wait for events to load
+    await waitFor(() =>
+      expect(screen.getByTestId("event-card")).toBeInTheDocument()
+    );
+
+    // Check static sections
+    expect(
+      screen.getByText(/Welcome to Campus Connector/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Mock Event/i)).toBeInTheDocument();
+    expect(screen.getByTestId("navbar")).toBeInTheDocument();
+  });
+
+  it("renders admin dashboard if user is admin", async () => {
+    // Override mock user to be admin
+    (require("@clerk/clerk-react").useUser as jest.Mock).mockReturnValue({
+      isLoaded: true,
+      user: {
+        id: "admin_123",
+        publicMetadata: { role: "admin" },
+      },
+    });
+
+    render(<App />);
+    await waitFor(() =>
+      expect(screen.getByTestId("admin-dashboard")).toBeInTheDocument()
+    );
+  });
+
+  it("shows loading screen when user is not yet loaded", () => {
+    (require("@clerk/clerk-react").useUser as jest.Mock).mockReturnValue({
+      isLoaded: false,
+      user: null,
+    });
+    render(<App />);
+    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
+  });
+
+  it("shows signed-out screen when user is signed out", async () => {
+    // Mock the user to be signed out
+    (require("@clerk/clerk-react").useUser as jest.Mock).mockReturnValue({
+      isLoaded: true,
+      user: null,
+    });
+
+    render(<App />);
+    expect(screen.getByTestId("signed-out")).toBeInTheDocument();
+  });
+
+//it("handles event registration for logged-in user", async () => {
+//  render(<App />);
+
+//  // Wait for the event to appear by checking for a text or title inside the event card
+//  await waitFor(() => screen.getByText(/Mock Event/i));
+
+//  // Simulate user registering for an event
+//  const eventCard = screen.getByTestId("event-card");
+//  expect(eventCard).toBeInTheDocument();
+
+//  // You can add more specific checks to make sure the button inside the card exists
+//  const registerButton = screen.getByText("Mock Event"); // This should be adjusted according to your UI
+//  expect(registerButton).toBeInTheDocument();
+
+//  // Mock the fetch for event registration
+//  global.fetch = jest.fn(() =>
+//    Promise.resolve({
+//      ok: true,
+//    })
+//  );
+
+//  // Simulate the click to register for the event
+//  registerButton.click();
+
+//  // Wait for the fetch call and verify it was made
+//  await waitFor(() =>
+//    expect(global.fetch).toHaveBeenCalledWith(
+//      "http://localhost:5000/api/events/1/register", // Ensure URL matches your actual API endpoint
+//      expect.objectContaining({
+//        method: "POST",
+//      })
+//    )
+//  );
+//});
+
+});
+ 
