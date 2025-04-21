@@ -7,7 +7,7 @@ module.exports = {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
   setupFilesAfterEnv: [
-    /jest.setup.js'
+    '/jest.setup.js'
   ],
   globals: {
     'ts-jest': {
