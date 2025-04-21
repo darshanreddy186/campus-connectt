@@ -6,7 +6,20 @@
   ],
   
   "compilerOptions": {
-    "types": ["jest", "@testing-library/jest-dom"]
-  }
+  "target": "es6",      // Change from es5 to es6
+  "module": "commonjs", // Change from esnext to commonjs for Jest compatibility
+  "jsx": "react-jsx",   // This is good for React 17+ JSX support
+  "strict": true,
+  "esModuleInterop": true,
+  "skipLibCheck": true,
+  "forceConsistentCasingInFileNames": true,
+  "moduleResolution": "node",
+  "resolveJsonModule": true,
+  "isolatedModules": true,
+  "noEmit": true
+},
+
+    "include": ["src"]
+  
 
 }
