@@ -7,7 +7,7 @@ module.exports = {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
   setupFilesAfterEnv: [
-    '/jest.setup.js'
+    '/home/runner/work/campus-connectt/campus-connectt/jest.setup.js'
   ],
   globals: {
     'ts-jest': {
