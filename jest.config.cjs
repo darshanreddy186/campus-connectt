@@ -7,7 +7,7 @@ module.exports = {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
   setupFilesAfterEnv: [
-    'C:/Users/Arogya Mary/Downloads/sem4/agileproject/agile/project/AgileProject2/campus-connectt/jest.setup.js'
+    /jest.setup.js'
   ],
   globals: {
     'ts-jest': {
