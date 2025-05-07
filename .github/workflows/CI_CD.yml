@@ -18,6 +18,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Cache Node.js modules to speed up workflow
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
       # Setup Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -25,15 +34,11 @@ jobs:
           node-version: 18
           cache: npm
 
-      # Clean and install dependencies
+      # Clean and Install Dependencies
       - name: Clean and Install Dependencies
         run: |
           rm -rf node_modules package-lock.json
-          npm install
-
-      # Install dependencies with npm ci
-      - name: Install Dependencies
-        run: npm ci
+          npm ci
 
       # Run tests
       - name: Run Tests
@@ -43,28 +48,26 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Docker login to DockerHub using credentials from GitHub secrets
+      # Docker login to DockerHub (using hardcoded credentials)
       - name: Log in to DockerHub
         uses: docker/login-action@v3
         with:
-          username:"benedictantonys"
-          password:"dckr_pat_z8dkSZsiLKzmZXhTl-Vmk5fJgKU"
-          
+          username: "benedictantonys"  # Replace with your Docker username
+          password: "dckr_pat_z8dkSZsiLKzmZXhTl-Vmk5fJgKU"  # Replace with your Docker password/token
 
       # Build Docker image
       - name: Build Docker Image
-        run: docker build -t "benedictantonys"/campus-connector-frontend:latest .
+        run: docker build -t "benedictantonys/campus-connector-frontend:latest" .
 
       # Push Docker image to Docker Hub
       - name: Push Docker Image
-        run: docker push "benedictantonys"/campus-connector-frontend:latest
-
+        run: docker push "benedictantonys/campus-connector-frontend:latest"
 
       # Deploy to Netlify (Netlify-specific environment variables)
       - name: Deploy to Netlify
         uses: netlify/actions/cli@master
         env:
-          NETLIFY_AUTH_TOKEN: nfp_fTgkwBW6Y2UYKz3GMCcS2GpC4AZr9hNDb88b
-          NETLIFY_SITE_ID: 35d74bc8-b4f1-41cd-99be-a3939f4f3f61
+          NETLIFY_AUTH_TOKEN: "nfp_fTgkwBW6Y2UYKz3GMCcS2GpC4AZr9hNDb88b"  # Replace with your Netlify Auth Token
+          NETLIFY_SITE_ID: "35d74bc8-b4f1-41cd-99be-a3939f4f3f61"  # Replace with your Netlify Site ID
         with:
           args: deploy --prod --dir=dist
