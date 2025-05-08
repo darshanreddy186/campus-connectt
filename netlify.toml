@@ -1,7 +1,7 @@
-[build]
-  command = "npm run build"
+# [build]
+#   command = "npm run build"
   
-  publish = "dist"  # Adjust according to your actual build folder
+#   publish = "dist"  # Adjust according to your actual build folder
   
 
 
