@@ -31,7 +31,6 @@ jobs:
 
       - name: Build
         run: npm run build
-        
 
       - name: Log in to DockerHub
         uses: docker/login-action@v3
@@ -44,11 +43,12 @@ jobs:
 
       - name: Push Docker Image
         run: docker push benedictantonys/campus-connector-frontend:latest
+
       - name: Trigger Render Deploy
         run: |
           curl -X POST https://api.render.com/deploy/srv-d0e77a1r0fns73cr0540 \
-          
-          -H "Authorization: Bearer rnd_n5OyjlodKjIB9hf01CBrXBngxCYK"
+            -H "Authorization: Bearer rnd_n5OyjlodKjIB9hf01CBrXBngxCYK"
+
       - name: Deploy to Netlify
         uses: netlify/actions/cli@master
         env:
