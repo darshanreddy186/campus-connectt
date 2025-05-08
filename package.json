@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "seed": "node server/seed.js",
-    "test": "jest"
+    "test": "jest",           // Preview the built app locally
+    "start": "vite preview"      
   },
   "dependencies": {
     "@clerk/clerk-react": "^4.32.5",
