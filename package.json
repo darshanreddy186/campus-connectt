@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "seed": "node server/seed.js",
-    "test": "jest",           // Preview the built app locally
+    "test": "jest",           
     "start": "vite preview"      
   },
   "dependencies": {
