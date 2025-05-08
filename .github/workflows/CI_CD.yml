@@ -30,7 +30,8 @@ jobs:
         run: npm test
 
       - name: Build
-        run: npm run dev
+        run: npm run build
+        
 
       - name: Log in to DockerHub
         uses: docker/login-action@v3
