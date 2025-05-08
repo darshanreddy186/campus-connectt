@@ -1,6 +1,6 @@
 [build]
   command= "npm run build"
-  publish= "/github/workspace/github/workspace/dist"
+  publish= "/dist"
 
 
 
