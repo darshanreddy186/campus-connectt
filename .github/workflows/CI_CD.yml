@@ -46,8 +46,7 @@ jobs:
 
       - name: Trigger Render Deploy
         run: |
-          curl -X POST https://api.render.com/deploy/srv-d0e77a1r0fns73cr0540 \
-            -H "Authorization: Bearer rnd_usWuTnuhNrTxy8x9UcdRZbYVfL76"
+          curl -X POST https://api.render.com/deploy/srv-d0e77a1r0fns73cr0540?key=Ax17tUgd57U
 
       - name: Deploy to Netlify
         uses: netlify/actions/cli@master
