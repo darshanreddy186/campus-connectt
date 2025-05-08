@@ -1,8 +1,6 @@
-# [build]
-#   command = "npm run build"
-  
-#   publish = "dist"  # Adjust according to your actual build folder
-  
+build:
+  command= "npm run build"
+  publish= "/github/workspace/dist"
 
 
 
